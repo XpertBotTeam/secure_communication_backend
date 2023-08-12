@@ -42,4 +42,39 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+    protected $primaryKey = 'UserID';
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'SenderID');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'RecipientID');
+    }
+
+    public function sentFiles()
+    {
+        return $this->hasMany(File::class, 'SenderID');
+    }
+
+    public function receivedFiles()
+    {
+        return $this->hasMany(File::class, 'RecipientID');
+    }
+
+    public function sentCalls()
+    {
+        return $this->hasMany(Call::class, 'SenderID');
+    }
+
+    public function receivedCalls()
+    {
+        return $this->hasMany(Call::class, 'RecipientID');
+    }
+
+
 }

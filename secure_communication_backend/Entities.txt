@@ -1,0 +1,43 @@
+Secure Comm Entities
+
+User:
+UserID (Primary Key)
+Username
+Password (Encrypted)
+Email
+Usertype (if admin he has more management access)
+
+Message:
+MessageID (Primary Key)
+Content (Encrypted)
+Status (Read/Delivered/Seen)
+Timestamp (when it was sent)
+SenderID (Foreign Key: UserID)
+RecipientID (Foreign Key: UserID)
+
+File:
+FileID (Primary Key)
+FileName
+FileSize
+FileType (Media/Document/Other)
+FileContent (Encrypted)
+Timestamp (when it was sent)
+SenderID (Foreign Key: UserID)
+RecipientID (Foreign Key: UserID)
+
+Call:
+CallID (Primary Key)
+CallType (Voice/Video)
+CallStart
+CallEnd
+SenderID (Foreign Key: UserID) //the one who calls
+RecipientID (Foreign Key: UserID) //the one who responds
+
+Usertype:
+UsertypeID
+UserTypeDescription
+
+User has many Messages (One-to-Many)
+User has many Files (One-to-Many)
+User has many Calls (One-to-Many)
+User can be an Admin //If the usertype is admin then has more control on app
