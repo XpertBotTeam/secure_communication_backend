@@ -24,6 +24,7 @@ use App\Http\Controllers\API\UserController;
 
 Route::post('register', [AuthController::class,'register']);
 Route::post('login', [AuthController::class,'login']);
+Route::middleware('auth:sanctum')->post('rememberMe', [AuthController::class, 'rememberMe']);
 
 //calls
 

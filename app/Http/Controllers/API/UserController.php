@@ -70,18 +70,21 @@ class UserController extends Controller
 {
     // Validate the incoming request data
     $request->validate([
-        'friend_id' => 'required|exists:users,UserID', // Ensure the friend exists
+        'friend_email' => 'required|email|exists:users,email', // Ensure the friend's email exists
     ]);
 
     // Get the authenticated user
     $user = $request->user();
 
+    // Find the user associated with the provided email
+    $friend = User::where('email', $request->input('friend_email'))->first();
+
     // Check if the friendship already exists
-    if (!$user->friends()->where('friend_id', $request->input('friend_id'))->exists()) {
+    if (!$user->friends()->where('friend_id', $friend->UserID)->exists()) {
         // Add the friend to the user's list of friends
         $friendship = new Friend([
             'user_id' => $user->UserID,
-            'friend_id' => $request->input('friend_id'),
+            'friend_id' => $friend->UserID,
             'status' => 'pending', // You can set the initial status as needed
         ]);
 
@@ -89,7 +92,7 @@ class UserController extends Controller
 
         // Create a reverse friend request so that the other user also sees the sender as a friend
         $reverseFriendship = new Friend([
-            'user_id' => $request->input('friend_id'),
+            'user_id' => $friend->UserID,
             'friend_id' => $user->UserID,
             'status' => 'pending', // You can set the initial status as needed
         ]);
@@ -105,18 +108,22 @@ class UserController extends Controller
 }
 
 
+
 public function acceptFriend(Request $request)
 {
     // Validate the incoming request data
     $request->validate([
-        'friend_id' => 'required|exists:users,UserID', // Ensure the friend exists
+        'friend_email' => 'required|email|exists:users,email', // Ensure the friend's email exists
     ]);
 
     // Get the authenticated user
     $user = $request->user();
 
+    // Find the user associated with the provided email
+    $friend = User::where('email', $request->input('friend_email'))->first();
+
     // Find the pending friendship record
-    $friendship = Friend::where('user_id', $request->input('friend_id'))
+    $friendship = Friend::where('user_id', $friend->UserID)
         ->where('friend_id', $user->UserID)
         ->where('status', 'pending')
         ->first();
@@ -131,7 +138,7 @@ public function acceptFriend(Request $request)
 
     // Also, update the reverse friendship status
     $reverseFriendship = Friend::where('user_id', $user->UserID)
-        ->where('friend_id', $request->input('friend_id'))
+        ->where('friend_id', $friend->UserID)
         ->where('status', 'pending')
         ->first();
 
@@ -142,7 +149,6 @@ public function acceptFriend(Request $request)
     // You can customize the response based on your application's needs
     return response()->json(['message' => 'Friendship request accepted successfully']);
 }
-
 public function getFriends(Request $request)
 {
     // Get the authenticated user

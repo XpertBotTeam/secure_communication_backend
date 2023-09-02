@@ -98,5 +98,20 @@ class AuthController extends Controller
     }
 
 
+    public function rememberMe(Request $request)
+    {
+        // Check if the user is authenticated
+        if (Auth::check()) {
+            // Extend the user's token expiration time
+            Auth::user()->refreshToken();
+            // Generate a new token response
+            $token = Auth::user()->createToken('authToken')->plainTextToken;
+
+            return response()->json(['access_token' => $token]);
+        }
+
+        return response()->json(['message' => 'User not authenticated'], 401);
+    }
+
 }
 

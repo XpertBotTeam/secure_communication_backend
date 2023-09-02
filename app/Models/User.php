@@ -94,4 +94,10 @@ public function friendNames()
     return $this->acceptedFriends->pluck('name'); // Assuming 'name' is the name column in your users table
 }
 
+public function refreshToken()
+    {
+        $this->tokens()->delete(); // Revoke existing tokens
+        return $this->createToken('authToken')->plainTextToken; // Generate and return a new token
+    }
+
 }

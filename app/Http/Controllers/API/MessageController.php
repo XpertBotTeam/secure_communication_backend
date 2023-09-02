@@ -76,7 +76,7 @@ class MessageController extends Controller
         $message->RecipientID = $recipientId;
         $message->Content = $messageContent;
         $message->save();
-
+        broadcast(new NewMessage($message))->toOthers();
         // Return a success response or any relevant data
         return response()->json(['message' => 'Message sent to recipient successfully']);
     }
@@ -125,4 +125,6 @@ class MessageController extends Controller
         }
         
     }
+
+
 }
