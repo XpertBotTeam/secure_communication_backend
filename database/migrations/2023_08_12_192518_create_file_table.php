@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('files', function (Blueprint $table) {
             $table->id('FileID');
             $table->string('FileName');
-            $table->unsignedBigInteger('FileSize');
-            $table->enum('FileType', ['Media', 'Document', 'Other']);
-            $table->binary('FileContent');
+            $table->unsignedDecimal('FileSize');
+            $table->string('FileType');
+            $table->string('FileContent');
             $table->timestamp('Timestamp')->useCurrent();
             $table->unsignedBigInteger('SenderID');
             $table->unsignedBigInteger('RecipientID');

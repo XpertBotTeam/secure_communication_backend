@@ -11,6 +11,14 @@ class Call extends Model
 
     protected $primaryKey = 'CallID';
 
+    protected $fillable = [
+        'CallType',
+        'CallStart',
+        'CallEnd',
+        'SenderID',
+        'RecipientID',
+    ];
+
     public function caller()
     {
         return $this->belongsTo(User::class, 'SenderID');

@@ -76,5 +76,22 @@ class User extends Authenticatable
         return $this->hasMany(Call::class, 'RecipientID');
     }
 
+    public function friends()
+{
+    return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
+        ->withPivot('status')
+        ->wherePivot('status', 'accepted');
+}
+
+public function acceptedFriends()
+{
+    return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
+        ->wherePivot('status', 'accepted');
+}
+
+public function friendNames()
+{
+    return $this->acceptedFriends->pluck('name'); // Assuming 'name' is the name column in your users table
+}
 
 }

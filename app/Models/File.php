@@ -7,9 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class File extends Model
 {
+
     use HasFactory;
 
     protected $primaryKey = 'FileID';
+
+    protected $fillable = [
+        'FileName',
+        'FileSize',
+        'FileType',
+        'FileContent',
+        'SenderID',
+        'RecipientID',
+    ];
+
 
     public function sender()
     {

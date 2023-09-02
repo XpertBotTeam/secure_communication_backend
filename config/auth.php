@@ -70,7 +70,19 @@ return [
         //     'table' => 'users',
         // ],
     ],
-
+    
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+    
+        'api' => [
+            'driver' => 'token', // You can also use 'passport' here if you're using Laravel Passport
+            'provider' => 'users',
+        ],
+    ],
+    
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords
