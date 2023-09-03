@@ -81,6 +81,22 @@ class MessageController extends Controller
         return response()->json(['message' => 'Message sent to recipient successfully']);
     }
 
+    public function getMessages($recipientId)
+    {
+        // Authenticate the user if not already authenticated (e.g., in a WebSocket middleware)
+        Auth::loginUsingId($recipientId);
+
+        // Subscribe the user to their private channel
+        Redis::subscribe(['private-user.' . $recipientId], function ($message) {
+            // Handle incoming messages, e.g., broadcast to the client
+            broadcast(new NewMessage(json_decode($message)));
+        });
+
+        // Return a response (usually, WebSocket connections stay open)
+        // You may not need to return a response in this context
+        return response()->json(['message' => 'WebSocket connection established']);
+    }
+
 //I dont think this is relevant for a chat app, it is better to not edit a message
     public function updateMessage(Request $request, $id)
     {
