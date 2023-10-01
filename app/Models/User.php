@@ -91,7 +91,23 @@ public function acceptedFriends()
 
 public function friendNames()
 {
-    return $this->acceptedFriends->pluck('name'); // Assuming 'name' is the name column in your users table
+    return $this->acceptedFriends->pluck(['name', 'email']); // Assuming 'name' is the name column in your users table
+}
+
+public function pendingFriendRequests()
+{
+    return $this->hasMany(Friend::class, 'friend_id')
+        ->where('status', 'pending')
+        ->with('user'); // Load the sender (initiator) of the request
+}
+
+
+public function isFriendWith(User $friend)
+{
+    return $this->friends()
+        ->where('friend_id', $friend->UserID)
+        ->where('status', 'accepted')
+        ->exists();
 }
 
 public function refreshToken()

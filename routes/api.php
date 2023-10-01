@@ -45,6 +45,9 @@ Route::delete('destroyMessage/{id}', [MessageController::class, 'destroyMessage'
 Route::middleware('auth:sanctum')->delete('deleteChatMessages', [MessageController::class,'deleteChatMessages']);
 
 
+Route::post('publishToChannel', [MessageController::class, 'publishToChannel']);
+
+
 //files
 // Route::get('indexFile', [FileController::class, 'indexFile']);
 // Route::put('updateFile/{id}', [FileController::class, 'updateFile']);
@@ -58,6 +61,7 @@ Route::post('messagedUsersByEmail', [UserController::class, 'messagedUsersByEmai
 Route::middleware('auth:sanctum')->post('addFriend', [UserController::class, 'addFriend']);
 Route::middleware('auth:sanctum')->post('acceptFriend', [UserController::class, 'acceptFriend']);
 Route::middleware('auth:sanctum')->get('getFriends', [UserController::class, 'getFriends']);
+Route::middleware('auth:sanctum')->get('getFriendRequests', [UserController::class, 'getFriendRequests']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

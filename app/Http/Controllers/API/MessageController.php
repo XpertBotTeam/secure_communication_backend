@@ -6,7 +6,10 @@ use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
+
+use Pusher\Pusher;
 class MessageController extends Controller
 {
     // public function indexMessage()
@@ -142,5 +145,86 @@ class MessageController extends Controller
         
     }
 
+
+    // function publishToChannel() {
+    //     $channelName = 'mychannel'; // Replace with your desired channel name //email lal receiver
+    //     $eventName = 'myevent';     // Replace with your desired event name
+    //     $messageData = ['message' => 'Hello, Pusher!']; // Replace with your message data // sender email , date/time  and message 
+    //     // Replace with your Pusher credentials and cluster information
+    //     $pusherAppId = '1663364';
+    //     $pusherKey = 'a6633a240c4dff774ec8';
+    //     $pusherSecret = 'e19061d4adad37599c1e';
+    //     $pusherCluster = 'eu'; // Replace with your cluster information
+    
+    //     // Initialize a Pusher client with the correct cluster
+    //     $pusher = new Pusher($pusherKey, $pusherSecret, $pusherAppId, [
+    //         'cluster' => $pusherCluster,
+    //         'useTLS' => false, // Use TLS for secure connections
+    //     ]);
+    
+    //     // Publish the message to the specified channel
+    //     $pusher->trigger($channelName, $eventName, $messageData);
+    // }
+
+
+
+    public function publishToChannel(Request $request)
+    {
+        $receiverEmail = $request->input('receiver_email');
+        $eventName = $request->input('event_name');
+        $senderEmail = $request->input('sender_email');
+        $messageText = $request->input('message');
+        $dateTime = now();
+    
+        // Query the sender's and recipient's User models to get their IDs
+        $sender = User::where('email', $senderEmail)->first();
+        $recipient = User::where('email', $receiverEmail)->first();
+    
+        // Ensure the sender and recipient exist
+        if (!$sender || !$recipient) {
+            return response()->json(['message' => 'Sender or recipient not found'], 404);
+        }
+    
+        // Construct your message data with the retrieved User IDs
+        $messageData = [
+            'receiver_email' => $receiverEmail,
+            'event_name' => $eventName,
+            'sender_email' => $senderEmail,
+            'message' => $messageText,
+            'date_time' => $dateTime,
+        ];
+    
+        // Insert the message into your database using the Message model
+        $message = new Message();
+        $message->Content = $messageText;
+        $message->Status = 'Delivered'; // Adjust the status as needed
+        $message->SenderID = $sender->UserID;
+        $message->RecipientID = $recipient->UserID;
+        $message->Timestamp = $dateTime;
+        $message->save();
+    
+        // Replace with your Pusher credentials and cluster information
+        $pusherAppId = '1663364';
+        $pusherKey = 'a6633a240c4dff774ec8';
+        $pusherSecret = 'e19061d4adad37599c1e';
+        $pusherCluster = 'eu'; // Replace with your cluster information
+    
+        // Initialize a Pusher client with the correct cluster
+        $pusher = new Pusher($pusherKey, $pusherSecret, $pusherAppId, [
+            'cluster' => $pusherCluster,
+            'useTLS' => false, // Use TLS for secure connections
+        ]);
+    
+        // Use the receiver's email as the channel name and the provided event name
+        $channelName = $receiverEmail;
+        $pusher->trigger($channelName, $eventName, $messageData);
+    
+        return response()->json(['message' => 'Message sent and saved successfully']);
+    }
+
+
+    
+   // channelname=email receiver
+   // message=data{sender email, datetime, message}
 
 }
