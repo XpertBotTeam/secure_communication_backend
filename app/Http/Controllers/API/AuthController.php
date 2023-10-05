@@ -113,5 +113,17 @@ class AuthController extends Controller
         return response()->json(['message' => 'User not authenticated'], 401);
     }
 
+    public function setToken(Request $request)
+    {
+        $user = Auth::user();
+        $newToken = $request->input('new_token');
+    
+        // Update the user's token with the provided value
+        $user->remember_token = $newToken;
+        $user->save();
+    
+        return response()->json(['message' => 'Token updated successfully']);
+    }
+
 }
 

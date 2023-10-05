@@ -167,7 +167,7 @@ class MessageController extends Controller
     // }
 
 
-
+    //optimal for web
     public function publishToChannel(Request $request)
     {
         $receiverEmail = $request->input('receiver_email');

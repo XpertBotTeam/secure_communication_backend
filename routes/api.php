@@ -25,6 +25,7 @@ use App\Http\Controllers\API\UserController;
 Route::post('register', [AuthController::class,'register']);
 Route::post('login', [AuthController::class,'login']);
 Route::middleware('auth:sanctum')->post('rememberMe', [AuthController::class, 'rememberMe']);
+Route::middleware('auth:sanctum')->post('setToken', [AuthController::class, 'setToken']);
 
 //calls
 
@@ -43,8 +44,6 @@ Route::middleware('auth:sanctum')->get('showMessage/{recipientId}', [MessageCont
 Route::middleware('auth:sanctum')->post('sendMessage/{recipientId}', [MessageController::class, 'sendMessage']);
 Route::delete('destroyMessage/{id}', [MessageController::class, 'destroyMessage']);
 Route::middleware('auth:sanctum')->delete('deleteChatMessages', [MessageController::class,'deleteChatMessages']);
-
-
 Route::post('publishToChannel', [MessageController::class, 'publishToChannel']);
 
 

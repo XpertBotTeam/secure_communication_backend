@@ -213,6 +213,7 @@ public function getFriends(Request $request)
         return [
             'name' => $friend->name,
             'email' => $friend->email,
+            'id' => $friend->UserID,
         ];
     });
 
