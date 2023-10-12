@@ -102,16 +102,24 @@ class AuthController extends Controller
     {
         // Check if the user is authenticated
         if (Auth::check()) {
-            // Extend the user's token expiration time
-            Auth::user()->refreshToken();
-            // Generate a new token response
-            $token = Auth::user()->createToken('authToken')->plainTextToken;
+            $user = Auth::user();
 
-            return response()->json(['access_token' => $token]);
+            // Set a new token expiration time (for example, a longer period)
+            $user->tokens->each(function ($token) {
+                $token->forceFill([
+                    'expires_at' => now()->addDays(30), // Extend token expiration time by 30 days
+                ])->save();
+            });
+
+            // Return the existing token
+            $token = $user->currentAccessToken();
+
+            return response()->json(['access_token' => $token->plainTextToken]);
         }
 
         return response()->json(['message' => 'User not authenticated'], 401);
     }
+
 
     public function setToken(Request $request)
     {

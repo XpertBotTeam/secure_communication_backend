@@ -7,7 +7,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CallController;
 use App\Http\Controllers\API\MessageController;
 use App\Http\Controllers\API\UserController;
-
+use App\Http\Controllers\Api\FileController;
 /*
 |--------------------------------------------------------------------------
 | API Routes

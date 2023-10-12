@@ -1,10 +1,18 @@
 <?php
+
 namespace App\Http\Controllers\API;
 
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+
+use App\Models\User;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 
 class FileController extends Controller
 {
@@ -40,7 +48,7 @@ class FileController extends Controller
         return response()->json(['files' => $files]);
     }
 
-    public function uploadFile(Request $request,$recipientId)
+    public function uploadFiles(Request $request,$recipientId)
     {
         $request->validate([
             'file' => 'required|file|mimes:pdf,docx,mp3,mp4,xls,xlsx,jpg,jpeg,png,gif,bmp,avi,mkv,wmv,mov,flv,3gp,webm,ogg,ogv,ts',
@@ -92,4 +100,46 @@ class FileController extends Controller
         $file->delete();
         return response()->json(null, 204);
     }
+
+
+    public function uploadFile(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'file' => 'required|file|mimes:jpeg,png,pdf,mp4,avi,mov,wmv|max:204800', // Adjust the allowed file types and maximum size as needed
+        ]);
+
+        // Handle the file upload
+        if ($request->hasFile('file')) {
+            $uploadedFile = $request->file('file');
+            $fileName = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+
+
+            // Determine the directory based on file type (e.g., images or videos)
+            $fileType = $uploadedFile->getClientOriginalExtension();
+            $directory = in_array($fileType, ['jpeg', 'png', 'pdf']) ? 'uploads/images' : 'uploads/videos';
+
+            // Store the file in the appropriate directory
+            $path = $uploadedFile->storeAs($directory, $fileName, 'secure');
+
+            // Create a new file record in the database
+            $file = new File([
+                'FileName' => $fileName,
+                'FileSize' => $uploadedFile->getSize(),
+                'FileType' => $fileType,
+                'FileContent' => $path, // Store the file path for later retrieval
+                'SenderID' => auth()->user()->id, // Assuming you have authentication
+                'RecipientID' => $recipientId, // Set the recipient ID as needed
+            ]);
+
+            $file->save();
+
+            return response()->json(['message' => 'File uploaded successfully'], 201);
+        } else {
+            return response()->json(['message' => 'No file provided'], 400);
+        }
+    }
+
+
+
 }

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
-
+use Edujugon\PushNotification\PushNotification;
 
 use Pusher\Pusher;
 class MessageController extends Controller
@@ -79,9 +79,22 @@ class MessageController extends Controller
         $message->RecipientID = $recipientId;
         $message->Content = $messageContent;
         $message->save();
-        broadcast(new NewMessage($message))->toOthers();
+        
+        $recipient = User::find($recipientId); // Replace "User" with your recipient model
+        if ($recipient) {
+            $push = new PushNotification('fcm');
+            $push->setMessage([
+                'notification' => [
+                    'title' => $sender->name,
+                    'body' => $messageContent,
+                ],
+                'to' => $recipient->remember_token, // Replace with the recipient's FCM token
+            ]);
+            $push->send();
+        }
         // Return a success response or any relevant data
         return response()->json(['message' => 'Message sent to recipient successfully']);
+
     }
 
     public function getMessages($recipientId)
@@ -126,6 +139,7 @@ class MessageController extends Controller
         $message->delete();
         return response()->json(null, 204);
     }
+    
 //delete all the chat between users bas kamen it will get delete 3end tnayneton
     public function deleteChatMessages()
     {
@@ -192,6 +206,7 @@ class MessageController extends Controller
             'sender_email' => $senderEmail,
             'message' => $messageText,
             'date_time' => $dateTime,
+
         ];
     
         // Insert the message into your database using the Message model

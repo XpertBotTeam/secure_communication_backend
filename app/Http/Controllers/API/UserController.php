@@ -15,24 +15,30 @@ use Illuminate\Validation\ValidationException;
 class UserController extends Controller
 {
     //need fix
-    public function messagedUsers(Request $request)
-    {
-        $userId = $request->user()->UserID; // Get the authenticated user's ID
-        $messagedUsers = Message::where('SenderID', $userId)
-                                ->orWhere('RecipientID', $userId)
-                                ->distinct()
-                                ->pluck('SenderID', 'RecipientID')
-                                ->flatten()
-                                ->reject(function ($id) use ($userId) {
-                                    return $id == $userId;
-                                })
-                                ->map(function ($id) {
-                                    return ['UserID' => $id];
-                                });
+   
 
-        
-        return response()->json($messagedUsers);
-    }
+public function messagedUsers(Request $request)
+{
+    $userId = $request->user()->UserID; // Get the authenticated user's ID
+
+    // Retrieve user IDs from the Message model
+    $userIds = Message::where('SenderID', $userId)
+        ->orWhere('RecipientID', $userId)
+        ->distinct()
+        ->pluck('SenderID', 'RecipientID')
+        ->flatten()
+        ->reject(function ($id) use ($userId) {
+            return $id == $userId;
+        });
+
+    // Retrieve user information (name and email) based on the user IDs
+    $messagedUsers = User::whereIn('UserID', $userIds)
+        ->select('UserID', 'name', 'email') // Adjust the columns as needed
+        ->get();
+
+    return response()->json($messagedUsers);
+}
+
 
 
     public function messagedUsersByEmail(Request $request)
@@ -234,11 +240,6 @@ public function getFriendRequests(Request $request)
         ->with('user') // Load the user who initiated the request
         ->get();
 
-    // Check if there are friend requests
-    if ($friendRequests->isEmpty()) {
-        return response()->json(['message' => 'No friend requests']);
-    }
-
     // Extract details of the users who sent the requests
     $requestDetails = $friendRequests->map(function ($request) {
         return [
@@ -247,9 +248,10 @@ public function getFriendRequests(Request $request)
         ];
     });
 
-    // You can customize the response format and data as needed
+    // Return the friend requests or an empty array if there are none
     return response()->json(['friend_requests' => $requestDetails]);
 }
+
 
     
 
