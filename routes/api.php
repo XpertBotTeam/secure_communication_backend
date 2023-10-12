@@ -61,6 +61,7 @@ Route::middleware('auth:sanctum')->post('addFriend', [UserController::class, 'ad
 Route::middleware('auth:sanctum')->post('acceptFriend', [UserController::class, 'acceptFriend']);
 Route::middleware('auth:sanctum')->get('getFriends', [UserController::class, 'getFriends']);
 Route::middleware('auth:sanctum')->get('getFriendRequests', [UserController::class, 'getFriendRequests']);
+Route::middleware('auth:sanctum')->post('rejectFriendRequest', [UserController::class, 'rejectFriendRequest']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

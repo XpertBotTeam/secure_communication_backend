@@ -253,6 +253,38 @@ public function getFriendRequests(Request $request)
 }
 
 
+public function rejectFriendRequest(Request $request)
+{
+    // Validate the incoming request data
+    $request->validate([
+        'friend_email' => 'required|email|exists:users,email', // Ensure the friend's email exists
+    ]);
+
+    // Get the authenticated user (friend)
+    $friend = $request->user();
+
+    // Find the user associated with the provided email (initiator)
+    $initiator = User::where('email', $request->input('friend_email'))->first();
+
+    // Find the pending friendship record initiated by the initiator
+    $friendship = Friend::where('user_id', $initiator->UserID)
+        ->where('friend_id', $friend->UserID)
+        ->where('status', 'pending')
+        ->first();
+
+    if (!$friendship) {
+        // Handle the case where the friendship request does not exist or is already accepted
+        return response()->json(['message' => 'Friendship request not found or already accepted'], 404);
+    }
+
+    // Delete the friendship request to reject it
+    $friendship->delete();
+
+    // You can customize the response based on your application's needs
+    return response()->json(['message' => 'Friendship request rejected successfully']);
+}
+
+
     
 
 }

@@ -7,9 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 use Edujugon\PushNotification\PushNotification;
-
 use Pusher\Pusher;
+
 class MessageController extends Controller
 {
     // public function indexMessage()
@@ -65,37 +66,91 @@ class MessageController extends Controller
     }
 
     //Create message:
-    public function sendMessage(Request $request, $recipientId)
-    {
-        // Get the currently logged-in user
-        $sender = Auth::user();
+    // public function sendMessage(Request $request, $recipientId)
+    // {
+    //     // Get the currently logged-in user
+    //     $sender = Auth::user();
 
-        // Get the message content from the request
-        $messageContent = $request->input('message');
+    //     // Get the message content from the request
+    //     $messageContent = $request->input('message');
 
-        // Create a new message record in the database
-        $message = new Message();
-        $message->SenderID = $sender->UserID;
-        $message->RecipientID = $recipientId;
-        $message->Content = $messageContent;
-        $message->save();
+    //     // Create a new message record in the database
+    //     $message = new Message();
+    //     $message->SenderID = $sender->UserID;
+    //     $message->RecipientID = $recipientId;
+    //     $message->Content = $messageContent;
+    //     $message->save();
         
-        $recipient = User::find($recipientId); // Replace "User" with your recipient model
-        if ($recipient) {
-            $push = new PushNotification('fcm');
-            $push->setMessage([
-                'notification' => [
-                    'title' => $sender->name,
-                    'body' => $messageContent,
-                ],
-                'to' => $recipient->remember_token, // Replace with the recipient's FCM token
-            ]);
-            $push->send();
-        }
-        // Return a success response or any relevant data
-        return response()->json(['message' => 'Message sent to recipient successfully']);
+    //     $recipient = User::find($recipientId); // Replace "User" with your recipient model
+    //     if ($recipient) {
+    //         $push = new PushNotification('fcm');
+    //         $push->setMessage([
+    //             'notification' => [
+    //                 'title' => $sender->name,
+    //                 'body' => $messageContent,
+    //             ],
+    //             'to' => $recipient->remember_token, // Replace with the recipient's FCM token
+    //         ]);
+    //         $push->send();
+    //     }
+    //     // Return a success response or any relevant data
+    //     return response()->json(['message' => 'Message sent to recipient successfully']);
 
+    // }
+
+    
+
+  
+
+    public function sendMessage(Request $request, $recipientId)
+{
+    // Get the authenticated user
+    $sender = Auth::user();
+
+    // Get the message content from the request
+    $messageContent = $request->input('message');
+
+    // Create a new message record in the database
+    $message = new Message();
+    $message->SenderID = $sender->UserID;
+    $message->RecipientID = $recipientId;
+    $message->Content = $messageContent;
+    $message->save();
+
+    // Construct the FCM notification data
+    $notificationData = [
+        'title' => $sender->name,
+        'body' => $messageContent,
+    ];
+
+    // Get the recipient's FCM token (replace with your own logic)
+    $recipient = User::find($recipientId);
+    $recipientFcmToken = $recipient->remember_token; // Replace with the recipient's FCM token
+
+    $customHeaders = [
+        'Authorization' => 'key=AAAAzXq6vRM:APA91bGLtifSE7dkYyPz8dZ3oE76Azf9QQhdhisryH3vjkSoktvU_1x7sd0BqiABqOAhn8zdBXEOtAMSaWxurhSG7K69iAJTBNlePZ10RED0u8bVRLELP38-OW5yS6gXQHodGN3UUFjh',
+        'Content-Type' => 'application/json',
+    ];
+
+    // Send the FCM notification
+    $response = Http::withOptions(['verify' => false])
+        ->withHeaders($customHeaders)
+        ->post('https://fcm.googleapis.com/fcm/send', [
+            'notification' => $notificationData,
+            'to' => $recipientFcmToken,
+        ]);
+
+    // Check if the notification was sent successfully
+    if ($response->successful()) {
+        // Notification sent successfully
+        return response()->json(['message' => 'Message sent to recipient successfully']);
+    } else {
+        // Handle the error (e.g., log it)
+        return response()->json(['error' => 'Failed to send FCM notification'], 500);
     }
+}
+
+
 
     public function getMessages($recipientId)
     {
