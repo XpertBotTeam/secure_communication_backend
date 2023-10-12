@@ -107,9 +107,16 @@ public function messagedUsers(Request $request)
     public function addFriend(Request $request)
     {
         // Validate the incoming request data
+        $messages = [
+            'friend_email.required' => 'The friend_email field is required.',
+            'friend_email.email' => 'The friend_email must be a valid email address.',
+            'friend_email.exists' => 'The provided friend_email does not exist in our system.',
+        ];
+    
+        // Validate the incoming request data with custom error messages
         $request->validate([
-            'friend_email' => 'required|email|exists:users,email', // Ensure the friend's email exists
-        ]);
+            'friend_email' => 'required|email|exists:users,email',
+        ], $messages);
     
         // Get the authenticated user
         $user = $request->user();
