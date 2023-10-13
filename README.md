@@ -32,10 +32,10 @@ Documentation can be found on this [wiki](https://github.com/XpertBotTeam/secure
 
 ## Contributors
 
--Gabriella Shebly - Backend Developer Intern @XpertBot
+- Gabriella Shebly - Backend Developer Intern @XpertBot
 
 People who also contributed to this project:
--Carlos Gerges - Mobile Developer Intern @XpertBot
+- Carlos Gerges - Mobile Developer Intern @XpertBot
 
 ## Feedback and Support
 
