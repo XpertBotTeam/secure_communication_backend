@@ -127,7 +127,7 @@ class AuthController extends Controller
         $newToken = $request->input('new_token');
     
         // Update the user's token with the provided value
-        $user->remember_token = $newToken;
+        $user->device_token = $newToken;
         $user->save();
     
         return response()->json(['message' => 'Token updated successfully']);

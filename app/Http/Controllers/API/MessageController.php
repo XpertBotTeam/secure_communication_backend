@@ -125,7 +125,7 @@ class MessageController extends Controller
 
     // Get the recipient's FCM token (replace with your own logic)
     $recipient = User::find($recipientId);
-    $recipientFcmToken = $recipient->remember_token; // Replace with the recipient's FCM token
+    $recipientFcmToken = $recipient->device_token; // Replace with the recipient's FCM token
 
     $customHeaders = [
         'Authorization' => 'key=AAAAzXq6vRM:APA91bGLtifSE7dkYyPz8dZ3oE76Azf9QQhdhisryH3vjkSoktvU_1x7sd0BqiABqOAhn8zdBXEOtAMSaWxurhSG7K69iAJTBNlePZ10RED0u8bVRLELP38-OW5yS6gXQHodGN3UUFjh',
