@@ -26,11 +26,11 @@ Multi-Platform Support: Our API is compatible with a variety of platforms, inclu
 
 [Laravel](https://laravel.com/)
 
-##Documentation
+## Documentation
 
 Documentation can be found on this wiki
 
-##Contributors
+## Contributors
 
 -Gabriella Shebly - Backend Developer Intern @XpertBot
 
