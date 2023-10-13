@@ -28,7 +28,7 @@ Multi-Platform Support: Our API is compatible with a variety of platforms, inclu
 
 ## Documentation
 
-Documentation can be found on this wiki
+Documentation can be found on this [wiki](https://github.com/XpertBotTeam/secure_communication_backend/wiki/Backend-APIs--Documentaion)
 
 ## Contributors
 
