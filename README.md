@@ -18,7 +18,7 @@ Our backend API empowers you with a range of features to enable secure communica
 
 User Authentication: Implement strong user verification and authentication mechanisms to ensure that your users' identities are protected. (using Laravel Sanctum)
 
-Real-Time Messaging: Leverage WebSockets to enable instant, bidirectional communication for chat, notifications, and more. (using [Firebase Cloud Messaging](https://firebase.google.com/) and [Pusher](https://pusher.com/)
+Real-Time Messaging: Leverage WebSockets to enable instant, bidirectional communication for chat, notifications, and more. (using [Firebase Cloud Messaging](https://firebase.google.com/) and [Pusher](https://pusher.com/) )
 
 Multi-Platform Support: Our API is compatible with a variety of platforms, including web, mobile, and desktop, enabling seamless communication across devices.
 
