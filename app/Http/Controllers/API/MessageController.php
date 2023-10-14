@@ -128,7 +128,7 @@ class MessageController extends Controller
     $recipientFcmToken = $recipient->device_token; // Replace with the recipient's FCM token
 
     $customHeaders = [
-        'Authorization' => 'key=AAAAzXq6vRM:APA91bGLtifSE7dkYyPz8dZ3oE76Azf9QQhdhisryH3vjkSoktvU_1x7sd0BqiABqOAhn8zdBXEOtAMSaWxurhSG7K69iAJTBNlePZ10RED0u8bVRLELP38-OW5yS6gXQHodGN3UUFjh',
+        'Authorization' => 'key=AAAAZByIAcU:APA91bEQi1lGyafydauOlbbudsey5WuubQvu2U83bzayaexnM271Yl5QltpQSQSKpnmmEc4vcBJhIvG7vdXrq_jagUyeThAmonar_hs66KAX21k0TZnRn0T_4lj5vtiI6NHgt0IkuDwX',
         'Content-Type' => 'application/json',
     ];
 
