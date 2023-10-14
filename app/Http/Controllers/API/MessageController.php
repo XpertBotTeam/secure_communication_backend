@@ -98,10 +98,6 @@ class MessageController extends Controller
 
     // }
 
-    
-
-  
-
     public function sendMessage(Request $request, $recipientId)
 {
     // Get the authenticated user
@@ -128,7 +124,7 @@ class MessageController extends Controller
     $recipientFcmToken = $recipient->device_token; // Replace with the recipient's FCM token
 
     $customHeaders = [
-        'Authorization' => 'key=AAAAZByIAcU:APA91bEQi1lGyafydauOlbbudsey5WuubQvu2U83bzayaexnM271Yl5QltpQSQSKpnmmEc4vcBJhIvG7vdXrq_jagUyeThAmonar_hs66KAX21k0TZnRn0T_4lj5vtiI6NHgt0IkuDwX',
+        'Authorization' => 'key=' . env('FCM_KEY'),
         'Content-Type' => 'application/json',
     ];
 
