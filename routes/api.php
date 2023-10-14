@@ -42,6 +42,7 @@ Route::delete('destroyCall/{id}', [CallController::class, 'destroyCall']);
 //Route::put('updateMessage/{id}', [MessageController::class, 'updateMessage']);
 Route::middleware('auth:sanctum')->get('showMessage/{recipientId}', [MessageController::class, 'showMessage']);
 Route::middleware('auth:sanctum')->post('sendMessage/{recipientId}', [MessageController::class, 'sendMessage']);
+Route::middleware('auth:sanctum')->post('chat', [MessageController::class, 'chat']);
 Route::delete('destroyMessage/{id}', [MessageController::class, 'destroyMessage']);
 Route::middleware('auth:sanctum')->delete('deleteChatMessages', [MessageController::class,'deleteChatMessages']);
 Route::post('publishToChannel', [MessageController::class, 'publishToChannel']);

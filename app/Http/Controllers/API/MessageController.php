@@ -293,7 +293,43 @@ class MessageController extends Controller
     }
 
 
-    
+
+    public function chat(Request $request)
+    {
+        // Get the user's message from the request
+        $userMessage = $request->input('message');
+
+        // Set up your OpenAI API request payload
+        $payload = [
+            'model' => 'gpt-3.5-turbo-0613', // Replace with your specific model
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => 'You are a helpful assistant.',
+                ],
+                [
+                    'role' => 'user',
+                    'content' => $userMessage,
+                ],
+            ],
+        ];
+
+        // Make a request to the OpenAI API
+        $apiKey = env('OPENAI_API_KEY');
+        $response = Http::withoutVerifying()
+            ->withToken($apiKey)
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+            ])
+            ->post('https://api.openai.com/v1/chat/completions', $payload);
+
+        $responseData = $response->json();
+
+        // Extract and return the assistant's response
+        $assistantResponse = $responseData['choices'][0]['message']['content'];
+
+        return response()->json(['message' => $assistantResponse]);
+    }
    // channelname=email receiver
    // message=data{sender email, datetime, message}
 
